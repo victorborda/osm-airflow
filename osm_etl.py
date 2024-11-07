@@ -46,14 +46,6 @@ with DAG("osm_dag", start_date=datetime(2024, 1, 1), schedule_interval="@@monthl
                                   -d rustprooflabs/pgosm-flex:0.4.5"
     )
 
-    etl_countries_osm = BashOperator(
-        task_id="etl_countries_osm",
-        bash_command=f"{docker_exec} \
-                        --region=north-america/us \
-                        --subregion=california \
-                        --pgosm-date={pgosm_date}"
-    )
-
     # US States
     with TaskGroup(group_id="etl_us_states_osm") as etl_us_states_osm:
         for us_state in us_states:
@@ -78,4 +70,4 @@ with DAG("osm_dag", start_date=datetime(2024, 1, 1), schedule_interval="@@monthl
         bash_command=f"{docker_exec} pg_dump -U postgres -d osm -f {local_src_data_dir}/osm-postetl-{pgosm_date}.sql"
     )
 
-run_pgosm >> etl_countries_osm >> etl_us_states_osm >> etl_eu_countries_osm >> dump_osm_db_to_file 
+run_pgosm >> etl_us_states_osm >> etl_eu_countries_osm >> dump_osm_db_to_file 
