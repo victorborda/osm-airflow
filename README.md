@@ -1,12 +1,19 @@
 # osm-airflow
-Use Apache Airflow to perform ETL of OSM data
 
-## Airflow setup for local Mac development:
+Use Apache Airflow to perform ETL of OSM data with PgOsmFlex. See further down for the details on what and why, but if you are already familiar with PgOsmFlex, here is how to get running quickly:
 
-1. Set the location for storing airflow config, it's db, etc in your.zshrc file:
+## Quick airflow setup for local Mac development:
+
+Set the directory for storing airflow config, it's db, etc in your.zshrc file:
 
 ```bash
 export AIRFLOW_HOME=~/airflow
+```
+
+Depending on your specific configuration, you may need to also add the following sort of entry in your .zshrc file as well:
+
+```bash
+export AIRFLOW_PYTHON=$(which python3.11)
 ```
 
 From here down run commands in this directory after having activated the venv:
@@ -14,7 +21,10 @@ From here down run commands in this directory after having activated the venv:
 source ./venv/bin/activate
 ```
 
-There is also a handy script to do that activation: activate.sh
+There is also a handy script to do that activation: 
+```bash
+./activate.sh
+```
 
 2. Run the following commands just once:
 
@@ -29,14 +39,16 @@ airflow users create --username admin --password <password> --firstname <yourfir
 airflow webserver --port 8090 > webserver.log 2>&1 &
 airflow scheduler > scheduler.log 2>&1 &
 ```
+Of course, you can adjust the log locations as you see fit.
 
 Once running, you can access the Airflow UI at http://localhost:8090/
 
-You will want to run the osm_etl.py dag.
+You will want to run the osm_etl.py dag. To make it visible to the airflow server, you have to copy or symlink it into the airflow dags directory, like so:
+>ln -s osm_etl.py ~/airflow/dags/
 
-## Deeper Dive
+## Deeper Dive - OSM2PGSQL and PGOSMFLEX for ETL of OSM data
 
-Okay, but what are we doing here and why? 
+In a nutshell, how to grab OSM data from the web, clean it up, transform it so that it's amenable to efficient querying, and load it into a temporary PostgreSQL+PostGIS database. Then, dump it out and load it into the real PostGIS database. 
 
 ### OSM2PGSQL
 
