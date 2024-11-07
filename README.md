@@ -40,7 +40,7 @@ Okay, but what are we doing here and why?
 
 ### OSM2PGSQL
 
-Osm2pgsql is used to import OSM (OpenStreetMap) data into a PostgreSQL/PostGIS database for rendering into maps and many other uses. Usually it is only part of a toolchain. For instance other software is needed for the actual rendering (i.e. turning the data into a map, like Prettymapp or Mapnik) or delivery of the maps to the user (bandiwalk-web-server and bandiwalk-web-react). Osm2Pgsql is flexible and needs to be steered so that its output ends up in PostGis in an optimal way - see the PgOsmFlex section below.
+Osm2pgsql is used to import OSM (OpenStreetMap) data into a PostgreSQL/PostGIS database for rendering into maps and many other uses. Usually it is only part of a toolchain. For instance other software is needed for the actual rendering (i.e. turning the data into a map, like Prettymapp or Mapnik) or delivery of the maps to the user (MapLibre.js for instance). Osm2Pgsql is flexible and needs to be steered so that its output ends up in PostGis in an optimal way - see the PgOsmFlex section below.
 
 It dumps a sql file out which we just then load into the actual postgis databasde that bandiwalk uses.
 
@@ -61,7 +61,7 @@ This excellent tool uses OSM2PGSQL to import OSM data into PostGis. It uses the 
 
 It's actually quite simple to use. Grab the image, run it, and issue one docker exec command.
 
-These commands need data to operate on though, so you have to get your desired pbf files downloaded first. Once you donwload the data you need, just make sure to adjust the commands. What commands you ask? I added shell scripts to bandiwalk-setup, so have a look in the scripts/pgosmflex directory and check out the associated readme file.
+These commands need data to operate on though, so you have to get your desired pbf files downloaded first (or let the importer download them for you). 
 
 There is also a public github repo for PgOsmFlex here (but for most purposes, the docker image is sufficient):
 <https://github.com/rustprooflabs/pgosm-flex/blob/main/Dockerfile>
