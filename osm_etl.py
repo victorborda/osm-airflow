@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.hooks.base import BaseHook
@@ -9,6 +9,7 @@ from airflow.models import Variable
 pgosm_conn = BaseHook.get_connection('pgosm_postgres_conn')
 pgosm_password = pgosm_conn.password
 pgosm_user = pgosm_conn.login
+pgosm_port = pgosm_conn.port
 pgosm_date = "2024-07-25"
 local_src_data_dir = Variable.get("pgosm_data_dir")
 pgosm_auth = f"-e POSTGRES_PASSWORD={pgosm_password} -e POSTGRES_USER={pgosm_user}"
@@ -26,7 +27,25 @@ eu_countries = [
     {"region": "eu", "subregion": "spain"}
 ]
 
-with DAG("osm_dag", start_date=datetime(2024, 1, 1), schedule_interval="@@monthly") as dag:
+# Define default arguments
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+with DAG(
+    dag_id="osm_dag",
+    default_args=default_args,
+    description='OpenStreetMap ETL Pipeline',
+    start_date=datetime(2024, 1, 1),
+    schedule_interval='@weekly',
+    catchup=False,
+    tags=['osm', 'etl'],
+) as dag:
 
     # starts a disposable container with PgOsmFlex + PostGIS + Osm2Pgsql
     # this will perform the ET part of the pipeline
@@ -42,7 +61,7 @@ with DAG("osm_dag", start_date=datetime(2024, 1, 1), schedule_interval="@@monthl
                                   -v {local_src_data_dir}:/app/output \
                                   -v /etc/localtime:/etc/localtime:ro \
                                   -e POSTGRES_PASSWORD={pgosm_password} \
-                                  -p 5450:5432 \
+                                  -p {pgosm_port}:5432 \
                                   -d rustprooflabs/pgosm-flex:0.4.5"
     )
 

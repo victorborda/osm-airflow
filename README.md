@@ -18,10 +18,11 @@ export AIRFLOW_PYTHON=$(which python3.11)
 
 From here down run commands in this directory after having activated the venv:
 ```bash
+pip install -r requirements.txt
 source ./venv/bin/activate
 ```
 
-There is also a handy script to do that activation: 
+There is also a handy script to do just the activation: 
 ```bash
 ./activate.sh
 ```
@@ -43,8 +44,24 @@ Of course, you can adjust the log locations as you see fit.
 
 Once running, you can access the Airflow UI at http://localhost:8090/
 
-You will want to run the osm_etl.py dag. To make it visible to the airflow server, you have to copy or symlink it into the airflow dags directory, like so:
+## Running osm_etl.py
+
+There are a few steps to take to run the osm_etl.py DAG. 
+
+The first is to create both a connection and a variable in the airflow UI.
+
+To create the connection, in the airflow UI go to Admin -> Connections and click the big blue + button. Fill in the details however you like, just make sure the login field is "postgres", password can be anything (the containers are temporary), and the port can be whatever doesn't conflict with anything else.
+
+To create the variable, in the airflow UI go to Admin -> Variables and click the big blue + button. Fill in the details like so:
+
+Key: pgosm_data_dir
+Value: /Users/yourusername/pgosm_data
+
+Or whatever local location you want to use to pass data to and from the pgosm container.
+
+In order to run the DAG, you have to make it visible to the airflow server, ie you have to copy or symlink it into the airflow dags directory, like so:
 >ln -s osm_etl.py $AIRFLOW_HOME/dags/
+
 
 ## Deeper Dive - OSM2PGSQL and PGOSMFLEX for ETL of OSM data
 
