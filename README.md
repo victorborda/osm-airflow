@@ -3,23 +3,23 @@ Use Apache Airflow to perform ETL of OSM data
 
 ## Airflow setup for local Mac development:
 
-1. Set this value in your .zshrc file:
+1. Set the location for storing airflow config, it's db, etc in your.zshrc file:
 
 ```bash
 export AIRFLOW_HOME=~/airflow
 ```
 
-or whatever suits your fancy.
-
-From here down run commands in this directory after having run
+From here down run commands in this directory after having activated the venv:
 ```bash
 source ./venv/bin/activate
 ```
 
+There is also a handy script to do that activation: activate.sh
+
 2. Run the following commands just once:
 
 ```bash
-airflow db init
+airflow db migrate
 airflow users create --username admin --password <password> --firstname <yourfirstname> --lastname <yourlastname> --role Admin --email <youremail>
 ```
 
