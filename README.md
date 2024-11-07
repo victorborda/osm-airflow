@@ -44,7 +44,7 @@ Of course, you can adjust the log locations as you see fit.
 Once running, you can access the Airflow UI at http://localhost:8090/
 
 You will want to run the osm_etl.py dag. To make it visible to the airflow server, you have to copy or symlink it into the airflow dags directory, like so:
->ln -s osm_etl.py ~/airflow/dags/
+>ln -s osm_etl.py $AIRFLOW_HOME/dags/
 
 ## Deeper Dive - OSM2PGSQL and PGOSMFLEX for ETL of OSM data
 
