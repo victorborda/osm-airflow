@@ -50,8 +50,10 @@ An important part of what osm2pgsql does is creating geometries from OSM data. I
 
 The geometry types supported by PostGIS are from the Simple Features defined by the OpenGIS Consortium (OGC).
 
-For running on MacOS:
+For running on MacOS you can do this:
 >brew install osm2pgsql
+
+But using the AirFlow dag in this repo is a little better as it allows you to just use the existing docker image which includes osm2pgsql and pgosmflex (below).
 
 To actually build osm2pgsql requires a decently extensive amount of dependent library and cmake setup. In that way, not too dissimilar from MetaGraph. For the moment though, and actually probably longterm, PgOsmFlex does all the hard lifting and there is a docker image available that contains osm2pgsql, pgosmflex, and postgis, so just use that to do all the cleaning and loading. 
 
