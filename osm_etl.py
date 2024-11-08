@@ -18,9 +18,9 @@ flex_cmd = f"{container_name} python3 docker/pgosm_flex.py"
 docker_exec = f"docker exec -it {pgosm_auth} {flex_cmd} --ram=8"
 
 us_states = [
-    {"region": "north-america/us", "subregion": "california"},
-    {"region": "north-america/us", "subregion": "oregon"},
-    {"region": "north-america/us", "subregion": "washington"}
+    {"region": "north-america/us", "subregion": "colorado"},
+ #   {"region": "north-america/us", "subregion": "oregon"},
+#    {"region": "north-america/us", "subregion": "washington"}
 ]
 
 eu_countries = [
@@ -33,7 +33,7 @@ default_args = {
     'depends_on_past': False,
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 0,
     'retry_delay': timedelta(minutes=5),
 }
 
@@ -69,10 +69,11 @@ with DAG(
     with TaskGroup(group_id="etl_us_states_osm") as etl_us_states_osm:
         for us_state in us_states:
             options = f"--region={us_state['region']} --subregion={us_state['subregion']} --pgosm-date={pgosm_date}"
+            cmd = f"{docker_exec} {options}"
             BashOperator(
-                task_id=f"etl_{us_state['subregion']}_osm",
-                bash_command=f"{docker_exec} {options}"
-            )
+                    task_id=f"etl_{us_state['subregion']}_osm",
+                    bash_command=f"{cmd} > /Users/victorborda/airflow/logs/pgosm_output.log"
+                )
 
     # EU Countries
     with TaskGroup(group_id="etl_eu_countries_osm") as etl_eu_countries_osm:
