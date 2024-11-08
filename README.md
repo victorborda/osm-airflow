@@ -1,5 +1,7 @@
 # osm-airflow
 
+WIP - still working out pro's and con's of using DockerOperator vs BashOperator.
+
 Use Apache Airflow to perform ETL of OSM data with PgOsmFlex. See further down for the details on what and why, but if you are already familiar with PgOsmFlex, here is how to get running quickly:
 
 ## Quick airflow setup for local Mac development:
